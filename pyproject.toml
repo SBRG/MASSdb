@@ -1,4 +1,4 @@
-title = "MASS-project TOML configuration file"
+title = "MASS-database TOML configuration file"
 
 
 ################################################################################
@@ -14,12 +14,12 @@ build-backend = "setuptools.build_meta"
 
 
 [tool.towncrier]
-package = "mass_project"
+package = "mass_database"
 package_dir = "src"
 filename = "NEWS.rst"
 directory = "news/"
 title_format = "{version} ({project_date})"
-issue_format = "`#{issue} <https://github.com/z-haiman/mass-project/issues/{issue}>`_"
+issue_format = "`#{issue} <https://github.com/sbrg/MASS-database/issues/{issue}>`_"
 type = [
   { name = "Features",                  directory = "feature", showcontent = true },
   { name = "Bug Fixes",                 directory = "bugfix",  showcontent = true },
@@ -46,7 +46,7 @@ python-version = [
 [tool.isort]
 profile = "black"
 src_paths = [
-    "src/mass_project"
+    "src/mass_database"
 ]
 indent = 4
 lines_after_imports = 2
@@ -70,7 +70,6 @@ python_files = [
 [tool.coverage.paths]
 source = [
     "src",
-    "tests",
 ]
 
 
@@ -114,13 +113,16 @@ python =
 
 [testenv]
 description = Base test environment configuration.
+deps = {distshare}/mass_manager-*.*
 passenv =
     PY_COLORS
 setenv =
     PYTHONPATH={toxinidir}/tests
     PYTHONUNBUFFERED=yes
     PY_COLORS={env:PY_COLORS:1}
-
+depends =
+    py3{6,7,8,9}: lint, clean
+    report: py3{6,7,8,9}
 
 [testenv:lint]
 description = Lint code via pre-commit hooks, finishing with isort --> black --> flake8
@@ -135,5 +137,31 @@ commands =
     pre-commit autoupdate
     pre-commit run --show-diff-on-failure --all-files
 
+
+[testenv:clean]
+description = Clean previous coverage reports.
+skip_install = true
+deps =
+    coverage[toml]
+commands =
+    coverage erase
+
+
+[testenv:py3{6,7,8,9}]
+description = Run tests under {basepython}.
+usedevelop = true
+extras = tests
+commands =
+    pytest {posargs: --cov --cov-append --cov-report=term-missing}
+
+
+[testenv:report]
+description = Report coverage over all test runs.
+skip_install = true
+deps =
+    coverage[toml]
+commands =
+    coverage report
+    coverage html
 
 """

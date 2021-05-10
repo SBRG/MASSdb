@@ -1,2 +1,1 @@
-# MASS-project
-Template repository for a MASSpy project
+# MASS-Database (MASSdb)
