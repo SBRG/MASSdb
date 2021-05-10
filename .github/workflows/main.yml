@@ -22,7 +22,7 @@ on:
           required: false
           default: '--upgrade --upgrade-strategy eager'
 env:
-  ACTIONS_SETUP_PY3: ${{ github.event.inputs.py-act || '3.8' }}
+  ACTIONS_SETUP_PY3: ${{ github.event.inputs.py-ver || '3.8' }}
   PIP_INSTALL_OPTS: ${{ github.event.inputs.pip_opts || '--upgrade --upgrade-strategy eager' }}
   PY_COLORS: 1
 
@@ -45,3 +45,55 @@ jobs:
         name: Run pre-commit
         id: pre-commit
         uses: pre-commit/action@v2.0.0
+
+  test:
+    needs: lint
+    runs-on: ${{ matrix.os }}
+    name: Test code (Py${{ matrix.py }} - ${{ matrix.os }})
+    strategy:
+      max-parallel: 3
+      fail-fast: false
+      matrix:
+        py: [3.6, 3.7, 3.8]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      -
+        name: Checkout repository
+        id: checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up Python ${{ matrix.py }}
+        id: setup
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.py }}
+      -
+        name: Set Python ${{ matrix.py }} cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('setup.cfg') }}-${{ hashFiles('pyproject.toml') }}
+      -
+        name : Install dependencies
+        id: install-deps
+        run: |
+          python -m pip install ${{ env.PIP_INSTALL_OPTS }} pip setuptools tox tox-gh-actions coverage[toml]
+      -
+        name: Run tests via tox
+        id: run-tox
+        run: |
+          python -m tox
+      -
+        name: Generate an XML report of coverage results
+        id: cov-report-xml
+        run: |
+          python -m coverage xml
+      -
+        name: Upload coverage report to Codecov.io
+        id: codecov-upload
+        uses: codecov/codecov-action@v1
+        with:
+          name: "py${{ matrix.py }}-${{ matrix.os }}"
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
