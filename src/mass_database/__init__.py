@@ -19,4 +19,4 @@ MassManager.mass_dependencies = OrderedDict(
 MASSMANAGER = MassManager()
 MASSMANAGER.main_directory = _BASE_DIR
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
