@@ -19,7 +19,7 @@ package_dir = "src"
 filename = "NEWS.rst"
 directory = "news/"
 title_format = "{version} ({project_date})"
-issue_format = "`#{issue} <https://github.com/sbrg/MASS-database/issues/{issue}>`_"
+issue_format = "`#{issue} <https://github.com/z-haiman/mass-database/issues/{issue}>`_"
 type = [
   { name = "Features",                  directory = "feature", showcontent = true },
   { name = "Bug Fixes",                 directory = "bugfix",  showcontent = true },
@@ -113,7 +113,6 @@ python =
 
 [testenv]
 description = Base test environment configuration.
-deps = {distshare}/mass_manager-*.*
 passenv =
     PY_COLORS
 setenv =
@@ -150,9 +149,13 @@ commands =
 [testenv:py3{6,7,8,9}]
 description = Run tests under {basepython}.
 usedevelop = true
-extras = tests
+deps =
+    pytest
+    pytest-cov
+    coverage[toml]
 commands =
     pytest {posargs: --cov --cov-append --cov-report=term-missing}
+
 
 
 [testenv:report]
