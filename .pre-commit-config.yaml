@@ -12,6 +12,7 @@ repos:
       - id: name-tests-test
         args: ['--django']
       - id: trailing-whitespace
+        exclude: setup.cfg
     - repo: https://github.com/pre-commit/pygrep-hooks
       rev: v1.9.0
       hooks:
@@ -22,17 +23,17 @@ repos:
       - id: rst-backticks
       - id: rst-directive-colons
       - id: rst-inline-touching-normal
-    # - repo: https://github.com/mgedmin/check-manifest
-    #   rev: "0.46"
-    #   hooks:
-    #   - id: check-manifest
-    #     args: [--no-build-isolation]
+    - repo: https://github.com/mgedmin/check-manifest
+      rev: "0.47"
+      hooks:
+      - id: check-manifest
+        args: [--no-build-isolation]
     - repo: https://github.com/pycqa/isort
-      rev: 5.9.3
+      rev: 5.10.1
       hooks:
       - id: isort
     - repo: https://github.com/psf/black
-      rev: 21.9b0
+      rev: 21.11b1
       hooks:
       - id: black
     - repo: https://gitlab.com/pycqa/flake8
