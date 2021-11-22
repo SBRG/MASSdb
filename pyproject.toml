@@ -1,4 +1,4 @@
-title = "MASS-database TOML configuration file"
+title = "MASSdb TOML configuration file"
 
 
 ################################################################################
@@ -14,12 +14,12 @@ build-backend = "setuptools.build_meta"
 
 
 [tool.towncrier]
-package = "mass_database"
+package = "massdb"
 package_dir = "src"
 filename = "NEWS.rst"
 directory = "news/"
 title_format = "{version} ({project_date})"
-issue_format = "`#{issue} <https://github.com/z-haiman/mass-database/issues/{issue}>`_"
+issue_format = "`#{issue} <https://github.com/z-haiman/massdb/issues/{issue}>`_"
 type = [
   { name = "Features",                  directory = "feature", showcontent = true },
   { name = "Bug Fixes",                 directory = "bugfix",  showcontent = true },
@@ -46,7 +46,7 @@ python-version = [
 [tool.isort]
 profile = "black"
 src_paths = [
-    "src/mass_database"
+    "src/massdb"
 ]
 indent = 4
 lines_after_imports = 2
