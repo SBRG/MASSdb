@@ -52,11 +52,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Test code (Python ${{ matrix.py }} - ${{ matrix.os }})
     strategy:
-      max-parallel: 3
+      max-parallel: 4
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        py: [3.9]
+        py: ${{ env.ACTIONS_SETUP_PY3 }}
     steps:
       -
         name: Checkout repository
@@ -99,11 +99,12 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
+
   publish-pypi:
     needs: [test]
     runs-on: ubuntu-latest
     name: Publish package to Python Packaging Index (PyPi)
-    if: github.event_name == 'push' && ( startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags') )
+    if: endsWith(github.ref, github.event.repository.default_branch) || ( github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') )
     steps:
       -
         name: Checkout
@@ -141,11 +142,10 @@ jobs:
           password: ${{ secrets.SBRG_MACHINE_PYPI_TEST_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
           skip_existing: true
-          verbose: true
       -
         name: Publish package to PyPI
         id: publish
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         uses: pypa/gh-action-pypi-publish@master
         with:
           user: __token__
