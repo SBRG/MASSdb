@@ -12,18 +12,9 @@ on:
     - main
     - devel
   workflow_dispatch:
-      inputs:
-        py-act:
-          description: 'Python 3.X for GH Actions'
-          required: false
-          default: '3.9'
-        pip_opts:
-          description: Install options (pip)
-          required: false
-          default: '--upgrade --upgrade-strategy eager'
+
 env:
-  ACTIONS_SETUP_PY3: ${{ github.event.inputs.py-act || '3.9' }}
-  PIP_INSTALL_OPTS: ${{ github.event.inputs.pip_opts || '--upgrade --upgrade-strategy eager' }}
+  ACTIONS_SETUP_PY3: '3.9'
   PY_COLORS: 1
 
 
@@ -37,7 +28,7 @@ jobs:
         id: checkout
         uses: actions/checkout@v2
       -
-        name: Set up Python ${{ env.ACTIONS_SETUP_PY3 }}
+        name: Set up Python
         id: setup
         uses: actions/setup-python@v2
         with:
@@ -56,7 +47,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        py: ${{ env.ACTIONS_SETUP_PY3 }}
+        py: [3.9]
     steps:
       -
         name: Checkout repository
@@ -79,7 +70,7 @@ jobs:
         name : Install dependencies
         id: install-deps
         run: |
-          python -m pip install ${{ env.PIP_INSTALL_OPTS }} pip setuptools tox tox-gh-actions coverage[toml]
+          python -m pip install --upgrade pip setuptools tox tox-gh-actions coverage[toml]
       -
         name: Run tests via tox
         id: run-tox
@@ -127,7 +118,7 @@ jobs:
         name : Install dependencies
         id: install-deps
         run: |
-          python -m pip install ${{ env.PIP_INSTALL_OPTS }} pip setuptools wheel build
+          python -m pip install --upgrade pip setuptools wheel build
       -
         name: Build package
         id: build
